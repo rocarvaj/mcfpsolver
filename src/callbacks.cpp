@@ -8,6 +8,7 @@ int infoCallback (CPXCENVptr env,
     int status;
     double bestLowerBound;
     double bestUpperBound;
+    int nodes;
 
     Log *tmplog = (Log*) cbhandle;
     Log &log = *tmplog;
@@ -21,6 +22,13 @@ int infoCallback (CPXCENVptr env,
             wherefrom, 
             CPX_CALLBACK_INFO_BEST_REMAINING, 
             &bestLowerBound);
+    assert(!status);
+
+    status = CPXgetcallbackinfo(env,
+            cbdata,
+            wherefrom,
+            CPX_CALLBACK_INFO_NODE_COUNT,
+            &nodes);
     assert(!status);
     
     if(!log.isFeas)
@@ -45,6 +53,7 @@ int infoCallback (CPXCENVptr env,
 
     double time = curTime - log.startTime;
     cout << setw(9) << right << time << "\t";
+    cout << setw(9) << right << nodes << "\t";
 
         if(bestLowerBound != -1e+75)
             cout << setw(12) << right << bestLowerBound << "\t";
