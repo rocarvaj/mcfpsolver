@@ -29,7 +29,7 @@ int infoCallback (CPXCENVptr env,
                 cbdata, 
                 wherefrom, 
                 CPX_CALLBACK_INFO_MIP_FEAS, 
-                log.isFeas);
+                &log.isFeas);
         assert(!status);
     }
 
@@ -44,7 +44,7 @@ int infoCallback (CPXCENVptr env,
     }
 
     double time = curTime - log.startTime;
-    cout << setw(9) << right << time << "\t"
+    cout << setw(9) << right << time << "\t";
 
         if(bestLowerBound != -1e+75)
             cout << setw(12) << right << bestLowerBound << "\t";
@@ -63,6 +63,8 @@ int infoCallback (CPXCENVptr env,
     }
     else
         cout << setw(6) << right << "--" << "%\t";
+
+    cout << endl;
 
     return 0;
 }

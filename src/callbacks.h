@@ -5,10 +5,21 @@
 
 #include "cplex.h"
 
+#include <cstdlib>
+#include <algorithm>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cmath>
+#include <ctime>
 #include <iomanip>
+#include <cassert>
+
+using namespace std;
 
 typedef struct Log {
-    int isFeas
+    int isFeas;
     double startTime;
 } Log;
 

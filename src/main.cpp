@@ -6,6 +6,7 @@
 //}
 
 #include "MCFP_Inst.h"
+#include "callbacks.h"
 
 #include <cstdlib>
 #include <vector>
@@ -65,6 +66,10 @@ int main(int argc, char** argv)
     cout << "Formulation: " << formulation << endl;
     cout << "Time limit: " << timeLimit << endl;
 
+
+    Log log;
+    log.isFeas = 0;
+
     MCFP_Inst inst(fileName, type);
 
     CPXENVptr env = CPXopenCPLEX(&status);
@@ -74,12 +79,14 @@ int main(int argc, char** argv)
     status = CPXsetdblparam(env, CPX_PARAM_TILIM, timeLimit);
     assert(!status);
 
-    status = CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON);
+    status = CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_OFF);
     assert(!status);
 
     status = CPXsetintparam(env, CPX_PARAM_THREADS, threads);
     assert(!status);
 
+    status = CPXsetinfocallbackfunc(env, infoCallback, &log);
+    assert(!status);
 
     if(formulation == 0)
     {
@@ -101,6 +108,8 @@ int main(int argc, char** argv)
     {
 
         status = CPXgettime(env, &startTime);
+
+        log.startTime = startTime;
 
         status = CPXmipopt(env, problem);
         assert(!status);
