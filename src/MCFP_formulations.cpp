@@ -80,6 +80,10 @@ int MCFP_Inst::formulateStrongLP(CPXENVptr env,
         cout << "Error in GLBaddVariables" << endl;
         return 1;
     }
+
+    status = CPXchgprobtype(env, problem, CPXPROB_LP);
+    assert(!status);
+
     status = GLBaddFlowConservation(env, problem);
     if(status)
     {
@@ -118,6 +122,10 @@ int MCFP_Inst::formulateWeakLP(CPXENVptr env,
         cout << "Error in GLBaddVariables" << endl;
         return 1;
     }
+
+    status = CPXchgprobtype(env, problem, CPXPROB_LP);
+    assert(!status);
+
     status = GLBaddFlowConservation(env, problem);
     if(status)
     {

@@ -114,31 +114,56 @@ int main(int argc, char** argv)
 
         log.startTime = startTime;
 
-        status = CPXmipopt(env, problem);
-        assert(!status);
+        if(formulation == 2 || formulation == 3)
+        {
+            status = CPXlpopt(env, problem);
+            assert(!status);
+        }
+        else
+        {
+            status = CPXmipopt(env, problem);
+            assert(!status);
+        }
 
         status = CPXgettime(env, &finalTime);
 
         int optStatus = CPXgetstat(env, problem);
 
         cout << "Status: (" << optStatus << ") ";
-        if(optStatus == CPXMIP_OPTIMAL || optStatus == CPXMIP_OPTIMAL_TOL)
-            cout << "Optimal" << endl;
-        else if(optStatus == CPXMIP_TIME_LIM_FEAS)
-            cout << "Time limit, feasible" << endl;
-        else if(optStatus == CPXMIP_TIME_LIM_INFEAS)
-            cout << "Time limit, infeasible" << endl;
-        else
-            cout << "See optim.cplex.solutionstatus in CPLEX manual\n" << endl;
- 
-        cout << "Total time: " << finalTime - startTime << endl;
-        
-        cout << fixed << setprecision(2) << endl;
-        status = CPXgetbestobjval(env, problem, &bestBound);
-        assert(!status);
-        cout << "*** Best bound: " << bestBound << endl;
+        if(formulation <= 1)
+        {
+            if(optStatus == CPXMIP_OPTIMAL || optStatus == CPXMIP_OPTIMAL_TOL)
+                cout << "Optimal" << endl;
+            else if(optStatus == CPXMIP_TIME_LIM_FEAS)
+                cout << "Time limit, feasible" << endl;
+            else if(optStatus == CPXMIP_TIME_LIM_INFEAS)
+                cout << "Time limit, infeasible" << endl;
+            else
+                cout << "See optim.cplex.solutionstatus in CPLEX manual\n" << endl;
+        }
+        else if(formulation == 2 || formulation == 3)
+        {
+            if(optStatus == CPX_STAT_OPTIMAL)
+                cout << "Optimal" << endl;
+            else if(optStatus == CPX_STAT_ABORT_TIME_LIM)
+                cout << "Time limit." << endl;
+            else
+                cout << "See optim.cplex.solutionstatus in CPLEX manual\n" << endl;
+        }
 
-        if(optStatus == CPXMIP_OPTIMAL || optStatus == CPXMIP_OPTIMAL_TOL || optStatus == CPXMIP_TIME_LIM_FEAS)
+        cout << "Total time: " << finalTime - startTime << endl;
+
+        cout << fixed << setprecision(2) << endl;
+
+        if(formulation <= 1)
+        {
+            status = CPXgetbestobjval(env, problem, &bestBound);
+            assert(!status);
+            cout << "*** Best bound: " << bestBound << endl;
+        }
+
+        if((formulation <= 1 && (optStatus == CPXMIP_OPTIMAL || optStatus == CPXMIP_OPTIMAL_TOL || optStatus == CPXMIP_TIME_LIM_FEAS))
+                || ((formulation == 2 || formulation == 3) && optStatus == CPX_STAT_OPTIMAL))
         {
             status = CPXgetobjval(env, problem, &bestSolValue);
             assert(!status);
