@@ -79,8 +79,11 @@ int main(int argc, char** argv)
     status = CPXsetdblparam(env, CPX_PARAM_TILIM, timeLimit);
     assert(!status);
 
-    status = CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_OFF);
-    assert(!status);
+    if(formulation == 2 || formulation == 3)
+    {
+        status = CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON);
+        assert(!status);
+    }
 
     status = CPXsetintparam(env, CPX_PARAM_THREADS, threads);
     assert(!status);
