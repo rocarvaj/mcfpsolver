@@ -65,6 +65,7 @@ int main(int argc, char** argv)
     cout << "Solving: " << fileName << endl;
     cout << "Formulation: " << formulation << endl;
     cout << "Time limit: " << timeLimit << endl;
+    cout << "Threads: " << threads << endl;
 
 
     Log log;
